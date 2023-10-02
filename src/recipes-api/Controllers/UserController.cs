@@ -23,7 +23,7 @@ public class UserController : ControllerBase
     // 6 - Sua aplicação deve ter o endpoint GET /user/:email
     [HttpGet("{email}", Name = "GetUser")]
     public IActionResult Get(string email)
-    {                
+    {
         User user = this._service.GetUser(email);
         if (user == null) return NotFound();
         return Ok(user);
@@ -35,6 +35,9 @@ public class UserController : ControllerBase
     {
         try
         {
+            if (this._service.UserExists(user.Email)) {
+                return Conflict(new { message = "User already registered" });
+            }
             this._service.AddUser(user);
             return CreatedAtRoute("GetUser", new { email = user.Email }, user);
         }
@@ -50,9 +53,8 @@ public class UserController : ControllerBase
     {
         try
         {
-            User userFound = this._service.GetUser(email);
-            if (userFound == null) return NotFound();
-            if (email != user.Email || user.Email != userFound.Email) return BadRequest();
+            if (this._service.UserExists(email)) return NotFound();
+            if (email != user.Email) return BadRequest();
             return CreatedAtRoute("GetUser", new { email = user.Email }, user);
         }
         catch (Exception)
@@ -65,6 +67,16 @@ public class UserController : ControllerBase
     [HttpDelete("{email}")]
     public IActionResult Delete(string email)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (!this._service.UserExists(email)) {
+                return NotFound();
+            }
+            return NoContent();
+        }
+        catch (Exception)
+        {
+            return BadRequest();
+        }
     } 
 }
