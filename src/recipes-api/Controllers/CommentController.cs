@@ -36,9 +36,17 @@ public class CommentController : ControllerBase
     }
 
     // 11 - Sua aplicação deve ter o endpoint GET /comment/:recipeName
-    [HttpGet("{name}", Name = "GetComment")]
-    public IActionResult Get(string name)
-    {                
-        throw new NotImplementedException();                   
+    [HttpGet("{recipeName}", Name = "GetComment")]
+    public IActionResult Get(string recipeName)
+    {
+        try
+        {
+            List<Comment> comments = this._service.GetComments(recipeName);
+            return Ok(comments);
+        }
+        catch (System.Exception)
+        {
+            return BadRequest();
+        }
     }
 }
