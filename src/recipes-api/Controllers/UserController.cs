@@ -48,7 +48,17 @@ public class UserController : ControllerBase
     [HttpPut("{email}")]
     public IActionResult Update(string email, [FromBody]User user)
     {
-        throw new NotImplementedException();
+        try
+        {
+            User userFound = this._service.GetUser(email);
+            if (userFound == null) return NotFound();
+            if (email != user.Email || user.Email != userFound.Email) return BadRequest();
+            return CreatedAtRoute("GetUser", new { email = user.Email }, user);
+        }
+        catch (Exception)
+        {
+            return BadRequest();
+        }
     }
 
     // 9 - Sua aplicação deve ter o endpoint DEL /user
