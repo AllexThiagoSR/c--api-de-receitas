@@ -54,7 +54,7 @@ public class UserController : ControllerBase
             User userFound = this._service.GetUser(email);
             if (userFound == null) return NotFound();
             if (email != user.Email) return BadRequest();
-            return CreatedAtRoute("GetUser", new { email = user.Email }, user);
+            return Ok(user);
         }
         catch (Exception)
         {
