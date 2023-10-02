@@ -24,7 +24,15 @@ public class CommentController : ControllerBase
     [HttpPost]
     public IActionResult Create([FromBody]Comment comment)
     {
-        throw new NotImplementedException();
+        try
+        {
+            this._service.AddComment(comment);
+            return CreatedAtAction(null, null, comment);
+        }
+        catch (System.Exception)
+        {
+            return BadRequest();
+        }
     }
 
     // 11 - Sua aplicação deve ter o endpoint GET /comment/:recipeName
