@@ -55,6 +55,10 @@ public class RecipesController : ControllerBase
     {
         try
         {
+            Recipe recipeFound = this._service.GetRecipe(name);
+            if (recipeFound == null) {
+                return NotFound();
+            }
             this._service.UpdateRecipe(recipe);
             return NoContent();
         }
@@ -68,6 +72,9 @@ public class RecipesController : ControllerBase
     [HttpDelete("{name}")]
     public IActionResult Delete(string name)
     {
-        throw new NotImplementedException();
+        Recipe recipe = this._service.GetRecipe(name);
+        if (recipe == null) return NotFound();
+        this._service.DeleteRecipe(recipe.Name);
+        return NoContent();
     }    
 }
