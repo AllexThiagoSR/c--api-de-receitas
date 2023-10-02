@@ -35,9 +35,6 @@ public class UserController : ControllerBase
     {
         try
         {
-            if (this._service.UserExists(user.Email)) {
-                return Conflict(new { message = "User already registered" });
-            }
             this._service.AddUser(user);
             return CreatedAtRoute("GetUser", new { email = user.Email }, user);
         }
@@ -53,7 +50,9 @@ public class UserController : ControllerBase
     {
         try
         {
-            if (this._service.UserExists(email)) return NotFound();
+
+            User userFound = this._service.GetUser(email);
+            if (userFound == null) return NotFound();
             if (email != user.Email) return BadRequest();
             return CreatedAtRoute("GetUser", new { email = user.Email }, user);
         }
